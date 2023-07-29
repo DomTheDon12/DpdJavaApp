@@ -41,7 +41,11 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>6.2.5.Final</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.5.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -49,6 +53,27 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<!--start with basic information to get Liquibase plugin:
+                include <groupId>, <artifactID>, and <version> elements-->
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.19.0</version>
+				<configuration>
+					<!--set values for Liquibase properties and settings
+                    for example, the location of a properties file to use-->
+					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
+					<propertyFileWillOverride>true</propertyFileWillOverride>
+				</configuration>
+				<dependencies>
+					<!--set up any dependencies for Liquibase to function in your
+                    environment for example, a database-specific plugin-->
+					<dependency>
+						<groupId>org.liquibase.ext</groupId>
+						<artifactId>liquibase-hibernate</artifactId>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
