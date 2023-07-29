@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1690622678382-1" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="address_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690622678382-2" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="person_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690622678382-3" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="phone_number_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690622678382-4" author="Pc (generated)">
+        <createTable tableName="address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_address"/>
+            </column>
+            <column name="postal_code" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="additional_info" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690622678382-5" author="Pc (generated)">
+        <createTable tableName="person">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_place" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taj" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taxid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690622678382-6" author="Pc (generated)">
+        <createTable tableName="person_addresses">
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="addresses_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690622678382-7" author="Pc (generated)">
+        <createTable tableName="person_phone_numbers">
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_numbers_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690622678382-8" author="Pc (generated)">
+        <createTable tableName="phone_number">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_phonenumber"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_numbers" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690622678382-9" author="Pc (generated)">
+        <addUniqueConstraint columnNames="phone_numbers_id" constraintName="uc_person_phone_numbers_phonenumbers"
+                             tableName="person_phone_numbers"/>
+    </changeSet>
+    <changeSet id="1690622678382-10" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="phone_numbers" baseTableName="phone_number"
+                                 constraintName="FK_PHONENUMBER_ON_PHONENUMBERS" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690622678382-11" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="addresses_id" baseTableName="person_addresses"
+                                 constraintName="fk_peradd_on_address" referencedColumnNames="id"
+                                 referencedTableName="address"/>
+    </changeSet>
+    <changeSet id="1690622678382-12" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_addresses"
+                                 constraintName="fk_peradd_on_person" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690622678382-13" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_phone_numbers"
+                                 constraintName="fk_perphonum_on_person" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690622678382-14" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="phone_numbers_id" baseTableName="person_phone_numbers"
+                                 constraintName="fk_perphonum_on_phone_number" referencedColumnNames="id"
+                                 referencedTableName="phone_number"/>
+    </changeSet>
+    <changeSet id="1690624938498-1" author="Pc (generated)">
+        <createTable tableName="address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_address"/>
+            </column>
+            <column name="postal_code" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="additional_info" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-2" author="Pc (generated)">
+        <createTable tableName="address_person">
+            <column name="address_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-3" author="Pc (generated)">
+        <createTable tableName="person">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_place" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taj" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taxid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-4" author="Pc (generated)">
+        <createTable tableName="person_addresses">
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="addresses_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-5" author="Pc (generated)">
+        <createTable tableName="person_phone_numbers">
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_numbers_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-6" author="Pc (generated)">
+        <createTable tableName="phone_number">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_phonenumber"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690624938498-7" author="Pc (generated)">
+        <addUniqueConstraint columnNames="phone_numbers_id" constraintName="uc_person_phone_numbers_phonenumbers"
+                             tableName="person_phone_numbers"/>
+    </changeSet>
+    <changeSet id="1690624938498-8" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="address_person"
+                                 constraintName="fk_addper_on_address" referencedColumnNames="id"
+                                 referencedTableName="address"/>
+    </changeSet>
+    <changeSet id="1690624938498-9" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="address_person"
+                                 constraintName="fk_addper_on_person" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690624938498-10" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="addresses_id" baseTableName="person_addresses"
+                                 constraintName="fk_peradd_on_address" referencedColumnNames="id"
+                                 referencedTableName="address"/>
+    </changeSet>
+    <changeSet id="1690624938498-11" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_addresses"
+                                 constraintName="fk_peradd_on_person" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690624938498-12" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_phone_numbers"
+                                 constraintName="fk_perphonum_on_person" referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+    <changeSet id="1690624938498-13" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="phone_numbers_id" baseTableName="person_phone_numbers"
+                                 constraintName="fk_perphonum_on_phone_number" referencedColumnNames="id"
+                                 referencedTableName="phone_number"/>
+    </changeSet>
+    <changeSet id="1690652523189-1" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="addresses_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690652523189-2" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="persons_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690652523189-3" author="Pc (generated)">
+        <createSequence incrementBy="50" sequenceName="phone_numbers_seq" startValue="1"/>
+    </changeSet>
+    <changeSet id="1690652523189-4" author="Pc (generated)">
+        <dropSequence sequenceName="address_seq"/>
+    </changeSet>
+    <changeSet id="1690652523189-5" author="Pc (generated)">
+        <dropSequence sequenceName="person_seq"/>
+    </changeSet>
+    <changeSet id="1690652523189-6" author="Pc (generated)">
+        <dropSequence sequenceName="phone_number_seq"/>
+    </changeSet>
+    <changeSet id="1690652723283-1" author="Pc (generated)">
+        <createTable tableName="addresses">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_addresses"/>
+            </column>
+            <column name="postal_code" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="additional_info" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690652723283-2" author="Pc (generated)">
+        <createTable tableName="person_address_table">
+            <column name="address_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690652723283-3" author="Pc (generated)">
+        <createTable tableName="persons">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_persons"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_place" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taj" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="taxid" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690652723283-4" author="Pc (generated)">
+        <createTable tableName="phone_numbers">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_phone_numbers"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fk_person_phone" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1690652723283-5" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="fk_person_phone" baseTableName="phone_numbers"
+                                 constraintName="FK_PHONE_NUMBERS_ON_FK_PERSON_PHONE" referencedColumnNames="id"
+                                 referencedTableName="persons"/>
+    </changeSet>
+    <changeSet id="1690652723283-6" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="person_address_table"
+                                 constraintName="fk_peraddtab_on_address" referencedColumnNames="id"
+                                 referencedTableName="addresses"/>
+    </changeSet>
+    <changeSet id="1690652723283-7" author="Pc (generated)">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="person_address_table"
+                                 constraintName="fk_peraddtab_on_person" referencedColumnNames="id"
+                                 referencedTableName="persons"/>
+    </changeSet>
+
+</databaseChangeLog>
