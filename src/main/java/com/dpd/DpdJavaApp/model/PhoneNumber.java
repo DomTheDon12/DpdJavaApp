@@ -1,9 +1,12 @@
 package com.dpd.DpdJavaApp.model;
 
+import lombok.Builder;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name= "phone_numbers")
+@Table(name = "phone_numbers")
+@Builder
 public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

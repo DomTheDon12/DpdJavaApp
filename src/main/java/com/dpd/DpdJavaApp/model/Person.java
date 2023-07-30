@@ -1,13 +1,15 @@
 package com.dpd.DpdJavaApp.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name="persons")
+@Table(name = "persons")
+@Builder
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,7 +31,7 @@ public class Person {
     @Column(name = "taxID", nullable = false)
     private String taxID;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -41,15 +43,27 @@ public class Person {
                     @JoinColumn(name = "address_id", referencedColumnName = "id")
             }
     )
-    @JsonManagedReference
-    private List<Address> addresses;
+    @JsonIgnoreProperties("persons")
+    private Set<Address> addresses;
 
     @OneToMany(targetEntity = PhoneNumber.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_person_phone", referencedColumnName = "id")
-    private List<PhoneNumber> phoneNumbers;
+    private Set<PhoneNumber> phoneNumbers;
 
 
-    public Person(String name, String birthPlace, LocalDate birthDate, String TAJ, String taxID, String email, List<Address> addresses, List<PhoneNumber> phoneNumbers) {
+    public Person(String name, String birthPlace, LocalDate birthDate, String TAJ, String taxID, String email, Set<Address> addresses, Set<PhoneNumber> phoneNumbers) {
+        this.name = name;
+        this.birthPlace = birthPlace;
+        this.birthDate = birthDate;
+        this.TAJ = TAJ;
+        this.taxID = taxID;
+        this.email = email;
+        this.addresses = addresses;
+        this.phoneNumbers = phoneNumbers;
+    }
+
+    public Person(Long id, String name, String birthPlace, LocalDate birthDate, String TAJ, String taxID, String email, Set<Address> addresses, Set<PhoneNumber> phoneNumbers) {
+        this.id = id;
         this.name = name;
         this.birthPlace = birthPlace;
         this.birthDate = birthDate;
@@ -120,19 +134,19 @@ public class Person {
         this.email = email;
     }
 
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public List<PhoneNumber> getPhoneNumbers() {
+    public Set<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
+    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 }

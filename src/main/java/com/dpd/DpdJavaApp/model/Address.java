@@ -1,12 +1,15 @@
 package com.dpd.DpdJavaApp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name="addresses")
+@Table(name = "addresses")
+@Builder
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,14 +32,14 @@ public class Address {
     private String additionalInfo;
 
     @ManyToMany(mappedBy = "addresses", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonBackReference
-    private List<Person> person;
+    @JsonIgnoreProperties("addresses")
+    private Set<Person> person;
 
-    public List<Person> getPerson() {
+    public Set<Person> getPerson() {
         return person;
     }
 
-    public void setPerson(List<Person> person) {
+    public void setPerson(Set<Person> person) {
         this.person = person;
     }
 
@@ -54,6 +57,16 @@ public class Address {
         this.street = street;
         this.houseNumber = houseNumber;
         this.additionalInfo = additionalInfo;
+    }
+
+    public Address(Long id, int postalCode, String city, String street, int houseNumber, String additionalInfo, Set<Person> person) {
+        this.id = id;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.additionalInfo = additionalInfo;
+        this.person = person;
     }
 
     public Address() {
@@ -98,5 +111,19 @@ public class Address {
 
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Address address = (Address) o;
+
+        if (postalCode != address.postalCode) return false;
+        if (houseNumber != address.houseNumber) return false;
+        if (!Objects.equals(city, address.city)) return false;
+        if (!Objects.equals(street, address.street)) return false;
+        return Objects.equals(additionalInfo, address.additionalInfo);
     }
 }
