@@ -8,6 +8,7 @@ import com.dpd.DpdJavaApp.model.response.FindPersonResponse;
 import com.dpd.DpdJavaApp.model.response.FindPersonsResponse;
 import com.dpd.DpdJavaApp.model.response.PersonResponse;
 import com.dpd.DpdJavaApp.model.response.SavePersonResponse;
+import com.dpd.DpdJavaApp.repository.AddressRepository;
 import com.dpd.DpdJavaApp.repository.PersonRepository;
 import com.dpd.DpdJavaApp.service.PersonService;
 
@@ -37,6 +38,9 @@ public class PersonServiceTests {
     private PersonRepository personRepository;
 
     @Mock
+    private AddressRepository addressRepository;
+
+    @Mock
     private ValidationService validationService;
 
     private PersonService personService;
@@ -51,7 +55,7 @@ public class PersonServiceTests {
 
     @BeforeEach
     public void setup() {
-        personService = new PersonService(personRepository, validationService);
+        personService = new PersonService(personRepository, addressRepository, validationService);
         phoneNumbers.add(PhoneNumber.builder().phoneNumber("06301234567").build());
 
         person = Person.builder()

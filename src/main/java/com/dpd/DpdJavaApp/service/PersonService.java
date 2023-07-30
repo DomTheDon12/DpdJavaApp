@@ -1,10 +1,12 @@
 package com.dpd.DpdJavaApp.service;
 
+import com.dpd.DpdJavaApp.model.Address;
 import com.dpd.DpdJavaApp.model.Person;
 import com.dpd.DpdJavaApp.model.response.FindPersonResponse;
 import com.dpd.DpdJavaApp.model.response.FindPersonsResponse;
 import com.dpd.DpdJavaApp.model.response.PersonResponse;
 import com.dpd.DpdJavaApp.model.response.SavePersonResponse;
+import com.dpd.DpdJavaApp.repository.AddressRepository;
 import com.dpd.DpdJavaApp.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PersonService {
 
     private final PersonRepository personRepository;
+
+    private final AddressRepository addressRepository;
 
 
     private final ValidationService validationService;
@@ -26,19 +31,23 @@ public class PersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
 
     @Autowired
-    public PersonService(PersonRepository personRepository, ValidationService validationService) {
+    public PersonService(PersonRepository personRepository, AddressRepository addressRepository, ValidationService validationService) {
         this.personRepository = personRepository;
+        this.addressRepository = addressRepository;
         this.validationService = validationService;
     }
 
     public ResponseEntity<SavePersonResponse> savePerson(Person person) {
-        /*for (Address address : person.getAddresses()) {
-            List<Address> addresses = addressRepository.findAll();
-            if (addresses.contains(address)) {
-
-            }
-        }*/
         try {
+            List<Address> addresses = addressRepository.findAll();
+            for(Address incomingAddress: person.getAddresses()){
+                if(addresses.contains(incomingAddress)){
+                    Long id = addresses.stream().filter( savedAddress -> savedAddress.equals(incomingAddress)).findAny().get().getId();
+                    incomingAddress.setId(id);
+                } else{
+                    addressRepository.save(incomingAddress);
+                }
+            }
             ResponseEntity<SavePersonResponse> validationResponse = validationService.validatePersonFields(person);
             if (validationResponse == null) {
                 Person savedPerson = personRepository.save(person);

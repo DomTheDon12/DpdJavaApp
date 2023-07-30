@@ -34,7 +34,7 @@ public class Person {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "PERSON_ADDRESS_TABLE",
             joinColumns = {
                     @JoinColumn(name = "person_id", referencedColumnName = "id")
