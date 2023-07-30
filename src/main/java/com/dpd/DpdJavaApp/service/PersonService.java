@@ -1,9 +1,16 @@
 package com.dpd.DpdJavaApp.service;
 
 import com.dpd.DpdJavaApp.model.Person;
-import com.dpd.DpdJavaApp.repository.AddressRepository;
+import com.dpd.DpdJavaApp.model.response.FindPersonResponse;
+import com.dpd.DpdJavaApp.model.response.FindPersonsResponse;
+import com.dpd.DpdJavaApp.model.response.PersonResponse;
+import com.dpd.DpdJavaApp.model.response.SavePersonResponse;
 import com.dpd.DpdJavaApp.repository.PersonRepository;
-import com.dpd.DpdJavaApp.repository.PhoneNumberRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,31 +18,103 @@ import java.util.List;
 @Service
 public class PersonService {
 
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    private AddressRepository addressRepository;
 
-    private PhoneNumberRepository phoneNumberRepository;
+    private final ValidationService validationService;
 
-    public PersonService(PersonRepository personRepository, AddressRepository addressRepository, PhoneNumberRepository phoneNumberRepository) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
+
+    @Autowired
+    public PersonService(PersonRepository personRepository, ValidationService validationService) {
         this.personRepository = personRepository;
-        this.addressRepository = addressRepository;
-        this.phoneNumberRepository = phoneNumberRepository;
+        this.validationService = validationService;
     }
 
-    public Person savePerson(Person person) {
-        return personRepository.save(person);
+    public ResponseEntity<SavePersonResponse> savePerson(Person person) {
+        /*for (Address address : person.getAddresses()) {
+            List<Address> addresses = addressRepository.findAll();
+            if (addresses.contains(address)) {
+
+            }
+        }*/
+        try {
+            ResponseEntity<SavePersonResponse> validationResponse = validationService.validatePersonFields(person);
+            if (validationResponse == null) {
+                Person savedPerson = personRepository.save(person);
+                return new ResponseEntity<>(new SavePersonResponse("Person saved successfully", false, savedPerson), HttpStatus.OK);
+            }
+            return validationResponse;
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new SavePersonResponse(exception.getMessage(), true, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public List<Person> findAllPersons() {
-        return personRepository.findAll();
+    public ResponseEntity<FindPersonsResponse> findAllPersons() {
+        try {
+            List<Person> persons = personRepository.findAll();
+            if (persons.isEmpty()) {
+                return new ResponseEntity<>(new FindPersonsResponse("No person were found", false, null), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(new FindPersonsResponse("The search was successful", false, persons), HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new FindPersonsResponse(exception.getMessage(), true, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
-    public Person findPersonById(Long id) {
-        return personRepository.findById(id).orElse(null);
+    public ResponseEntity<FindPersonResponse> findPersonById(Long id) {
+        try {
+            Person person = personRepository.findById(id).orElse(null);
+            if (person != null) {
+                return new ResponseEntity<>(new FindPersonResponse("Person was successfully found with id: " + id, false, person), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new FindPersonResponse("No person were found with the given id" + id, false, null), HttpStatus.NOT_FOUND);
+            }
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new FindPersonResponse(exception.getMessage(), true, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
-    public List<Person> findPersonsContainingByName(String name){
-        return personRepository.findByNameContaining(name);
+    public ResponseEntity<FindPersonsResponse> findPersonsContainingByName(String name) {
+        try {
+            List<Person> persons = personRepository.findByNameContaining(name);
+            if (persons.isEmpty()) {
+                return new ResponseEntity<>(new FindPersonsResponse("No person were found with the given name: " + name, false, null), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(new FindPersonsResponse("Persons were successfully found with name: " + name, false, persons), HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new FindPersonsResponse(exception.getMessage(), true, null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<PersonResponse> deletePersonById(Long id) {
+        try {
+            if (personRepository.existsById(id)) {
+                personRepository.deleteById(id);
+                return new ResponseEntity<>(new PersonResponse("Person was deleted succesfully by id: " + id, false), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(new PersonResponse("No person was found by id: " + id, true), HttpStatus.NOT_FOUND);
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new PersonResponse(exception.getMessage(), true), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public ResponseEntity<PersonResponse> deleteAllPerson() {
+        try {
+            personRepository.deleteAll();
+            return new ResponseEntity<>(new PersonResponse("All persons were deleted from the database", false), HttpStatus.OK);
+        } catch (RuntimeException exception) {
+            LOGGER.error(exception.getMessage(), exception);
+            return new ResponseEntity<>(new PersonResponse(exception.getMessage(), true), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }
